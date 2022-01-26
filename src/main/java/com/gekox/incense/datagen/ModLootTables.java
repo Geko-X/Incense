@@ -1,6 +1,5 @@
 package com.gekox.incense.datagen;
 
-import com.gekox.incense.setup.Registration;
 import net.minecraft.data.DataGenerator;
 
 public class ModLootTables extends BaseLootTableProvider {

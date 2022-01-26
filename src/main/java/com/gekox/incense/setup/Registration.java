@@ -1,5 +1,6 @@
 package com.gekox.incense.setup;
 
+import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
 import com.gekox.incense.item.ItemPaste;
 import com.gekox.incense.util.IncenseType;
@@ -15,8 +16,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import com.gekox.incense.Constants;
 import net.minecraftforge.registries.RegistryObject;
 
 public class Registration {

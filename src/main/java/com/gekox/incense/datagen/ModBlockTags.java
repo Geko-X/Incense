@@ -5,7 +5,6 @@ import com.gekox.incense.setup.Registration;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ModBlockTags extends BlockTagsProvider {
