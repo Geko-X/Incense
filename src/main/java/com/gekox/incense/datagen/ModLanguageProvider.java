@@ -12,10 +12,11 @@ public class ModLanguageProvider extends LanguageProvider {
 	public ModLanguageProvider(DataGenerator gen, String locale) {
 		super(gen, Constants.MODID, locale);
 	}
-
+	
 	@Override
 	protected void addTranslations() {
 		
+		add("incense." + Constants.Names.NAME_INCENSE_PASTE, "Incense Paste");
 		add("incense.type.none", "Sooty");
 		add("incense.type.passive", "Passive");
 		add("incense.type.hostile", "Hostile");
@@ -28,12 +29,19 @@ public class ModLanguageProvider extends LanguageProvider {
 		add("incense.type.golem", "Golem");
 		
 		add("itemGroup." + TAB_NAME, "Incense");
+
+		add(Constants.Lang.SHIFT, "SHIFT");
+		add(Constants.Lang.USE, "USE");
+		add(Constants.Lang.BURN, "BURN");
 		
-		add("tooltip.incense.paste.short_desc", "This paste will attract %s type cretures");
-		add("tooltip.incense.holdshift", "Hold \u00A7eSHIFT\u00A7r for more info");
-		add("tooltip.incense.paste.header", "Will attract the following mobs");
-		add("tooltip.incense.paste.none", "This paste will not attact mobs");
-		add("tooltip.incense.paste.none2", "Use it to plan out spawning spaces!");
+		add(Constants.Lang.TOOLTIP_HOLD_SHIFT, "Hold %s for more info");
+		add(Constants.Lang.TOOLTIP_PASTE_INSTRUCTIONS, "%s on a placed %s");
+		add(Constants.Lang.TOOLTIP_PASTE_SHORT_DESC, "This paste will attract %s type cretures");
+		add(Constants.Lang.TOOLTIP_PASTE_HEADER, "Will attract the following mobs");
+		add(Constants.Lang.TOOLTIP_PASTE_NONE, "This paste will not attact mobs. ");
+		add(Constants.Lang.TOOLTIP_PASTE_NONE2, "Use it to plan out spawning spaces!");
+		
+		add(Constants.Lang.TOOLTIP_STICK_INSTRUCTIONS, "Place in world and %s %s on it, then %s");
 		
 		add(Registration.BLOCK_INCENSE_STICK.get(), "Incense Stick");
 //		add(Registration.BLOCK_TEST_BLOCK.get(), "Test Block");

@@ -114,7 +114,13 @@ public class Color {
 
 	// http://stackoverflow.com/questions/4801366/convert-rgb-values-into-integer-pixel
 	public int toInt() {
-		return ((this.r&0x0ff)<<16)|((this.g&0x0ff)<<8)|(this.b&0x0ff);
+		//return ((this.r&0x0ff)<<16)|((this.g&0x0ff)<<8)|(this.b&0x0ff);
+		
+		int rgb = this.r;
+		rgb = (rgb << 8) + this.g;
+		rgb = (rgb << 8) + this.b;
+		
+		return rgb;
 	}
 
 	@Override
