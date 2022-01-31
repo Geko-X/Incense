@@ -2,10 +2,18 @@ package com.gekox.incense.setup;
 
 import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
-import com.gekox.incense.client.RenderItemPaste;
+import com.gekox.incense.client.IncenseStickModelLoader;
+import com.gekox.incense.client.IncenseStickRender;
+import com.gekox.incense.client.PasteRender;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -16,13 +24,18 @@ public class ClientSetup {
 
 		ModEntry.LOGGER.info("Client setup");
 		
+//		event.enqueueWork(() -> {
+//			ItemBlockRenderTypes.setRenderLayer(Registration.BLOCK_INCENSE_STICK.get(), RenderType.translucent());
+//			IncenseStickRender.Register();
+//		});
+		
 	}
 	
 	@SubscribeEvent
 	public static void onColorHandlerEvent(ColorHandlerEvent.Item event) {
 		ModEntry.LOGGER.info("Registering color handlers");
 //		registerItemPasteHandler(event, Registration.ITEM_INCENSE_PASTE.get());	
-		registerItemPasteHandler(event, Registration.ITEM_INCENSE_PASTE_NONE.get());
+		registerItemPasteHandler(event, Registration.ITEM_INCENSE_PASTE_SOOTY.get());
 		registerItemPasteHandler(event, Registration.ITEM_INCENSE_PASTE_PASSIVE.get());
 		registerItemPasteHandler(event, Registration.ITEM_INCENSE_PASTE_HOSTILE.get());
 		registerItemPasteHandler(event, Registration.ITEM_INCENSE_PASTE_NEUTRAL.get());
@@ -35,6 +48,20 @@ public class ClientSetup {
 	}
 	
 	private static void registerItemPasteHandler(ColorHandlerEvent.Item event, Item item) {
-		event.getItemColors().register(new RenderItemPaste(), item);
+		event.getItemColors().register(new PasteRender(), item);
+	}
+	
+	@SubscribeEvent
+	public static void onTextureStitch(TextureStitchEvent.Pre event) {
+		if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
+			return;
+		}
+		
+		event.addSprite(IncenseStickRender.STICK_TEXTURE);
+	}
+
+	@SubscribeEvent
+	public static void onModelRegistryEvent(ModelRegistryEvent event) {
+		ModelLoaderRegistry.registerLoader(IncenseStickModelLoader.INCENSE_STICK_LOADER, new IncenseStickModelLoader());
 	}
 }

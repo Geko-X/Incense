@@ -17,7 +17,7 @@ public class ModItemTags extends ItemTagsProvider {
 	protected void addTags() {
 		tag(Registration.TAG_INCENSE_PASTE)
 //				.add(Registration.ITEM_INCENSE_PASTE.get());
-				.add(Registration.ITEM_INCENSE_PASTE_NONE.get())
+				.add(Registration.ITEM_INCENSE_PASTE_SOOTY.get())
 				.add(Registration.ITEM_INCENSE_PASTE_PASSIVE.get())
 				.add(Registration.ITEM_INCENSE_PASTE_HOSTILE.get())
 				.add(Registration.ITEM_INCENSE_PASTE_NEUTRAL.get())

@@ -1,6 +1,8 @@
 package com.gekox.incense.util;
 
-public enum IncenseType {
+import net.minecraft.util.StringRepresentable;
+
+public enum IncenseType implements StringRepresentable {
 	NONE("none"),
 	PASSIVE("passive"),
 	HOSTILE("hostile"),
@@ -10,7 +12,8 @@ public enum IncenseType {
 	VILLAGE("village"),
 	ILLAGE("illage"),
 	WATER("water"),
-	GOLEM("golem");
+	GOLEM("golem"),
+	SOOTY("sooty");
 
 	private String text;
 	
@@ -30,5 +33,10 @@ public enum IncenseType {
 			}
 		}
 		throw new IllegalArgumentException("");
+	}
+
+	@Override
+	public String getSerializedName() {
+		return toString();
 	}
 }

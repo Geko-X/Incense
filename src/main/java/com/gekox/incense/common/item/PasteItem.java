@@ -59,7 +59,7 @@ public class PasteItem extends Item {
 				.withStyle(ChatFormatting.BLUE);
 		pTooltipComponents.add(line);
 		
-		if(incenseType == IncenseType.NONE) {
+		if(incenseType == IncenseType.SOOTY) {
 			line = new TranslatableComponent(Constants.Lang.TOOLTIP_PASTE_NONE).append(new TranslatableComponent(Constants.Lang.TOOLTIP_PASTE_NONE2));
 			pTooltipComponents.add(line);
 			return;

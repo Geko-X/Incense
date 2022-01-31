@@ -7,7 +7,8 @@ import net.minecraft.network.chat.TranslatableComponent;
 public class Constants {
 
 	public static final String MODID = "incense";
-
+	public static final int MAX_BURN_HEIGHT = 7;
+	
 	public static class Names {
 		public static final String NAME_TEST_BLOCK = "block";
 		public static final String NAME_INCENSE_STICK = "incense_stick";

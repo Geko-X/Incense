@@ -5,6 +5,7 @@ import com.gekox.incense.setup.Registration;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ModBlockTags extends BlockTagsProvider {
@@ -16,8 +17,8 @@ public class ModBlockTags extends BlockTagsProvider {
 	@Override
 	protected void addTags() {
 		// Vallina uses BlockTags class
-		tag(BlockTags.CAMPFIRES)
-				.add(Registration.BLOCK_INCENSE_STICK.get());
+//		tag(BlockTags.CAMPFIRES)
+//				.add(Registration.BLOCK_INCENSE_STICK.get());
 		
 		
 		// Forge uses Tags.Blocks

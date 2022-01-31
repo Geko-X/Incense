@@ -13,6 +13,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -22,7 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class Registration {
-
+	
 	private static final DeferredRegister<Item> MOD_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MODID);
 	private static final DeferredRegister<Block> MOD_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Constants.MODID);
 	private static final DeferredRegister<BlockEntityType<?>> MOD_BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Constants.MODID);
@@ -38,6 +40,10 @@ public class Registration {
 		MOD_BLOCK_ENTITIES.register(bus);
 	}
 
+	// Blockstates
+	public static final EnumProperty<IncenseType> BLOCKSTATE_INCENSE_TYPE = EnumProperty.create("incense_type", IncenseType.class);
+	public static final IntegerProperty BLOCKSTATE_BURN_HEIGHT = IntegerProperty.create("burn_time", 0, Constants.MAX_BURN_HEIGHT);
+	
 	public static final BlockBehaviour.Properties BLOCK_PROPERTIES_MOD_DEFAULT = BlockBehaviour.Properties.of(Material.WOOD).strength(0);
 	public static final Item.Properties ITEM_PROPERTIES_MOD_DEFAULT = new Item.Properties().tab(ModSetup.ITEM_GROUP);
 	
@@ -51,8 +57,8 @@ public class Registration {
 	public static final RegistryObject<Item> ITEM_MORTAR_PESTLE = MOD_ITEMS.register(Constants.Names.NAME_MORTAR_PESTLE,
 			() -> new Item(ITEM_PROPERTIES_MOD_DEFAULT));
 	
-	public static final RegistryObject<Item> ITEM_INCENSE_PASTE_NONE = MOD_ITEMS.register(Constants.Names.NAME_INCENSE_PASTE + "_" + IncenseType.NONE.toString(),
-			() -> new PasteItem(ITEM_PROPERTIES_MOD_DEFAULT, IncenseType.NONE));
+	public static final RegistryObject<Item> ITEM_INCENSE_PASTE_SOOTY = MOD_ITEMS.register(Constants.Names.NAME_INCENSE_PASTE + "_" + IncenseType.SOOTY.toString(),
+			() -> new PasteItem(ITEM_PROPERTIES_MOD_DEFAULT, IncenseType.SOOTY));
 
 	public static final RegistryObject<Item> ITEM_INCENSE_PASTE_PASSIVE = MOD_ITEMS.register(Constants.Names.NAME_INCENSE_PASTE + "_" + IncenseType.PASSIVE.toString(),
 			() -> new PasteItem(ITEM_PROPERTIES_MOD_DEFAULT, IncenseType.PASSIVE));

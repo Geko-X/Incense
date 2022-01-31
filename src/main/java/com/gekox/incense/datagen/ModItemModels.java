@@ -23,7 +23,7 @@ public class ModItemModels extends ItemModelProvider {
 
 //		registerItemTexture(Registration.ITEM_INCENSE_PASTE, Constants.NAME_INCENSE_PASTE);
 //		
-		registerItemTexture(Registration.ITEM_INCENSE_PASTE_NONE, Constants.Names.NAME_INCENSE_PASTE);
+		registerItemTexture(Registration.ITEM_INCENSE_PASTE_SOOTY, Constants.Names.NAME_INCENSE_PASTE);
 		registerItemTexture(Registration.ITEM_INCENSE_PASTE_PASSIVE, Constants.Names.NAME_INCENSE_PASTE);
 		registerItemTexture(Registration.ITEM_INCENSE_PASTE_HOSTILE, Constants.Names.NAME_INCENSE_PASTE);
 		registerItemTexture(Registration.ITEM_INCENSE_PASTE_NEUTRAL, Constants.Names.NAME_INCENSE_PASTE);

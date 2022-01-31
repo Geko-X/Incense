@@ -39,7 +39,7 @@ public class ModRecipes extends RecipeProvider {
 				.unlockedBy("has_item", has(ItemTags.SLABS))
 				.save(consumer);
 		
-		ShapelessRecipeBuilder.shapeless(ITEM_INCENSE_PASTE_NONE.get())
+		ShapelessRecipeBuilder.shapeless(ITEM_INCENSE_PASTE_SOOTY.get())
 				.requires(ITEM_MORTAR_PESTLE.get())
 				.requires(ItemTags.COALS)
 				.unlockedBy("has_item", has(ITEM_MORTAR_PESTLE.get()))

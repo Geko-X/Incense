@@ -50,7 +50,7 @@ public class Color {
 	
 	public static String getColorCodeFromType(IncenseType type) {
 		return switch (type) {
-			case NONE -> CODE_GRAY;
+			case SOOTY -> CODE_GRAY;
 			case PASSIVE -> CODE_GREEN;
 			case HOSTILE -> CODE_PINK;
 			case NEUTRAL -> CODE_LIGHT_BLUE;
@@ -60,12 +60,13 @@ public class Color {
 			case ILLAGE -> CODE_GRAY;
 			case WATER -> CODE_BLUE;
 			case GOLEM -> CODE_LIGHT_GRAY;
+			default -> CODE_WHITE;
 		};
 
 	}
 
 	// Particle colors
-	public static Color INCENSE_NONE = new Color(100, 100, 100);
+	public static Color INCENSE_SOOTY = new Color(100, 100, 100);
 	public static Color INCENSE_PASSIVE = new Color(40, 130, 40);
 	public static Color INCENSE_HOSTILE = new Color(200, 40, 40);
 	public static Color INCENSE_NEUTRAL = new Color(122, 169, 250);
@@ -78,7 +79,7 @@ public class Color {
 
 	public static Color getColorFromType(IncenseType type) {
 		return switch (type) {
-			case NONE -> INCENSE_NONE;
+			case SOOTY -> INCENSE_SOOTY;
 			case PASSIVE -> INCENSE_PASSIVE;
 			case HOSTILE -> INCENSE_HOSTILE;
 			case NEUTRAL -> INCENSE_NEUTRAL;
@@ -88,6 +89,9 @@ public class Color {
 			case ILLAGE -> INCENSE_ILLAGE;
 			case WATER -> INCENSE_WATER;
 			case GOLEM -> INCENSE_GOLEM;
+			
+			default -> new Color(255, 255, 255);
+			
 		};
 	}
 

@@ -17,7 +17,7 @@ public class ModLanguageProvider extends LanguageProvider {
 	protected void addTranslations() {
 		
 		add("incense." + Constants.Names.NAME_INCENSE_PASTE, "Incense Paste");
-		add("incense.type.none", "Sooty");
+		add("incense.type.sooty", "Sooty");
 		add("incense.type.passive", "Passive");
 		add("incense.type.hostile", "Hostile");
 		add("incense.type.neutral", "Neutral");
@@ -49,7 +49,7 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(Registration.ITEM_MORTAR_PESTLE.get(), "Mortar and Pestle");
 //		add(Registration.ITEM_INCENSE_PASTE.get(), "Incense Paste");
 		
-		add(Registration.ITEM_INCENSE_PASTE_NONE.get(), "Sooty Incense Paste");
+		add(Registration.ITEM_INCENSE_PASTE_SOOTY.get(), "Sooty Incense Paste");
 		add(Registration.ITEM_INCENSE_PASTE_PASSIVE.get(), "Passive Incense Paste");
 		add(Registration.ITEM_INCENSE_PASTE_HOSTILE.get(), "Hostile Incense Paste");
 		add(Registration.ITEM_INCENSE_PASTE_NEUTRAL.get(), "Neutral Incense Paste");
