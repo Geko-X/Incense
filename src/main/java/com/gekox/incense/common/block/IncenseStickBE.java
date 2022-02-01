@@ -31,6 +31,7 @@ public class IncenseStickBE extends BlockEntity {
 	
 	protected IncenseType _incenseType = IncenseType.NONE;
 	protected int burnHeight = Constants.MAX_BURN_HEIGHT;
+	protected boolean isBurning = false;
 	
 	public IncenseStickBE(BlockPos pos, BlockState state) {
 		super(Registration.BE_INCENSE_STICK.get(), pos, state);
@@ -76,8 +77,6 @@ public class IncenseStickBE extends BlockEntity {
 			if(ticks == 0)
 				decrementBurn();
 		}
-		
-		
 	}
 	
 	private void decrementBurn() {

@@ -76,60 +76,10 @@ public class IncenseStickBakedModel implements IDynamicBakedModel {
 			
 		
 		IncenseStickModelKey key = new IncenseStickModelKey(incenseType, burnHeight, modelState);
-	//	ModEntry.LOGGER.info("getQuads " + key);
-	//	return quadCache.get(key);
-		
-		return getQuadsNotCached(burnHeight);
-		
+		return quadCache.get(key);
 	}
 	
 	
-	
-	private List<BakedQuad> getQuadsNotCached(int burnHeight) {
-
-		var quads = new ArrayList<BakedQuad>();
-
-		Transformation rotation = modelState.getRotation();
-		TextureAtlasSprite texture_side = spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK_SIDE);
-		TextureAtlasSprite texture_top = spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK_TOP);
-		
-		// Bounds
-		float w = ONE_EIGTH;
-		float h = ONE_EIGTH * (burnHeight);
-		
-		float p0 = 0.5f - w;
-		float p1 = 0.5f + w;
-		
-		int u0, v0, u1, v1;
-		
-		u0 = 6;
-		v0 = 6;
-		u1 = 10;
-		v1 = 10;
-		
-		// Top
-		//quads.add(ClientTools.createQuad(v(x1, y2, z1), v(x1, y2, z2), v(x2, y2, z2), v(x2, y2, z1), rotation, texture));
-		quads.add(ClientTools.createQuad(v(p1, h, p1), v(p1, h, p0), v(p0, h, p0), v(p0, h, p1), rotation, texture_top, u0, v0, u1, v1));
-
-		int b = (Constants.MAX_BURN_HEIGHT - burnHeight + 1) * 2;
-		
-		u0 = 6;
-		v0 = 0;
-		u1 = 10;
-		v1 = 16 - b;
-		
-		// Sides
-		quads.add(ClientTools.createQuad(v(p0, h, p1), v(p0, 0, p1), v(p1, 0, p1), v(p1, h, p1), rotation, texture_side, u0, v0, u1, v1)); // Z+
-		quads.add(ClientTools.createQuad(v(p1, h, p0), v(p1, 0, p0), v(p0, 0, p0), v(p0, h, p0), rotation, texture_side, u0, v0, u1, v1)); // Z-
-		
-//		quads.add(ClientTools.createQuad(v(p0, h, p0), v(p1, h, p0), v(p1, 0, p0), v(p0, 0, p0), rotation, texture_side, 7, tv1, 10, 0)); // F
-//		quads.add(ClientTools.createQuad(v(p0, h, p1), v(p0, 0, p1), v(p1, 0, p1), v(p1, h, p1), rotation, texture_side, 4, 16)); // B
-
-		// Base
-//		quads.add(ClientTools.createQuad(v(p1, 0, p1), v(p0, 0, p1), v(p0, 0, p0), v(p1, 0, p0), rotation, texture_top, 7, 7, 10, 10));
-		
-		return quads;
-	}
 
 	@Override
 	public boolean useAmbientOcclusion() {
@@ -181,34 +131,46 @@ public class IncenseStickBakedModel implements IDynamicBakedModel {
 	private List<BakedQuad> generateQuads(IncenseType incenseType, int burnHeight) {
 
 		ModEntry.LOGGER.info("Generating quads for: " + incenseType + " at height " + burnHeight);
-		
+
 		var quads = new ArrayList<BakedQuad>();
 
 		Transformation rotation = modelState.getRotation();
-
-		TextureAtlasSprite texture = spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK_TOP);
+		TextureAtlasSprite texture_side = spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK_SIDE);
+		TextureAtlasSprite texture_top = spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK_TOP);
 
 		// Bounds
-		float w = 0.1f;
-		float h = 0.8f * burnHeight;
+		float w = ONE_EIGTH;
+		float h = ONE_EIGTH * (burnHeight);
 
-		float x1 = 0.5f - (w / 2);
-		float y1 = 0.0f;
-		float z1 = 0.5f - (w / 2);
+		float p0 = 0.5f - w;
+		float p1 = 0.5f + w;
 
-		float x2 = x1 + w;
-		float y2 = y1 + h;
-		float z2 = z1 + w;
+		int u0, v0, u1, v1;
+
+		u0 = 6;
+		v0 = 6;
+		u1 = 10;
+		v1 = 10;
 
 		// Top
-		//quads.add(ClientTools.createQuad(v(x1, y2, z1), v(x1, y2, z2), v(x2, y2, z2), v(x2, y2, z1), rotation, texture));
-		quads.add(ClientTools.createQuad(v(1, 1, 0), v(1, 1, 1), v(0, 1, 1), v(0, 1, 0), DIRECTION_UP, rotation, texture));
-//		quads.add(ClientTools.createQuad(v(0, 0, 0), v(1, 0, 0), v(1, 0, 1), v(0, 0, 1), rotation, texture));
-		
-		// Sides
-		
+		quads.add(ClientTools.createQuad(v(p1, h, p1), v(p1, h, p0), v(p0, h, p0), v(p0, h, p1), rotation, texture_top, u0, v0, u1, v1));
 		// Base
-		
+		quads.add(ClientTools.createQuad(v(p1, 0, p1), v(p0, 0, p1), v(p0, 0, p0), v(p1, 0, p0), rotation, texture_top, u0, v0, u1, v1));
+
+		int b = (Constants.MAX_BURN_HEIGHT - burnHeight + 1) * 2;
+
+		u0 = 6;
+		v0 = 0;
+		u1 = 10;
+		v1 = 16 - b;
+
+		// Sides
+		quads.add(ClientTools.createQuad(v(p0, h, p1), v(p0, 0, p1), v(p1, 0, p1), v(p1, h, p1), rotation, texture_side, u0, v0, u1, v1)); // Z+
+		quads.add(ClientTools.createQuad(v(p1, h, p0), v(p1, 0, p0), v(p0, 0, p0), v(p0, h, p0), rotation, texture_side, u0, v0, u1, v1)); // Z-
+
+		quads.add(ClientTools.createQuad(v(p1, h, p1), v(p1, 0, p1), v(p1, 0, p0), v(p1, h, p0), rotation, texture_side, u0, v0, u1, v1)); // X+
+		quads.add(ClientTools.createQuad(v(p0, h, p0), v(p0, 0, p0), v(p0, 0, p1), v(p0, h, p1), rotation, texture_side, u0, v0, u1, v1)); // X-
+
 		return quads;
 		
 	}

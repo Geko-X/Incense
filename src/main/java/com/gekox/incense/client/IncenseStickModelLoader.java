@@ -23,7 +23,7 @@ public class IncenseStickModelLoader implements IModelLoader<IncenseStickModelLo
 
 	public static final ResourceLocation INCENSE_STICK_LOADER = new ResourceLocation(Constants.MODID, "incense_stick_loader");
 
-	public static final ResourceLocation INCENSE_STICE_TEXTURE_SIDE = new ResourceLocation(Constants.MODID, "block/incense_stick_side_uv");
+	public static final ResourceLocation INCENSE_STICE_TEXTURE_SIDE = new ResourceLocation(Constants.MODID, "block/incense_stick_side");
 	public static final ResourceLocation INCENSE_STICE_TEXTURE_TOP = new ResourceLocation(Constants.MODID, "block/incense_stick_top");
 
 	public static final Material MATERIAL_INCENSE_STICK_SIDE = ForgeHooksClient.getBlockMaterial(INCENSE_STICE_TEXTURE_SIDE);

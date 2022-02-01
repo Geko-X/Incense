@@ -21,6 +21,7 @@ public class Constants {
 		public static final String COLOR_R = "incense.color.r";
 		public static final String COLOR_G = "incense.color.g";
 		public static final String COLOR_B = "incense.color.b";
+		public static final String IS_BURNING = "incense.burning";
 	}
 	
 	public static class Lang {
