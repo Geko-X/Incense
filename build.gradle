@@ -170,7 +170,7 @@ jar {
 				"Specification-Vendor"    : "geko_x",
 				"Specification-Version"   : "1", // We are version 1 of ourselves
 				"Implementation-Title"    : project.name,
-				"Implementation-Version"  : project.jar.archiveVersion,
+				"Implementation-Version"  : "${mod_version}",
 				"Implementation-Vendor"   : "geko_x",
 				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 		])
