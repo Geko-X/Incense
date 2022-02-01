@@ -23,8 +23,11 @@ public class IncenseStickModelLoader implements IModelLoader<IncenseStickModelLo
 
 	public static final ResourceLocation INCENSE_STICK_LOADER = new ResourceLocation(Constants.MODID, "incense_stick_loader");
 
-	public static final ResourceLocation INCENSE_STICE_TEXTURE = new ResourceLocation(Constants.MODID, "block/incense_stick");
-	public static final Material MATERIAL_INCENSE_STICK = ForgeHooksClient.getBlockMaterial(INCENSE_STICE_TEXTURE);
+	public static final ResourceLocation INCENSE_STICE_TEXTURE_SIDE = new ResourceLocation(Constants.MODID, "block/incense_stick_side_uv");
+	public static final ResourceLocation INCENSE_STICE_TEXTURE_TOP = new ResourceLocation(Constants.MODID, "block/incense_stick_top");
+
+	public static final Material MATERIAL_INCENSE_STICK_SIDE = ForgeHooksClient.getBlockMaterial(INCENSE_STICE_TEXTURE_SIDE);
+	public static final Material MATERIAL_INCENSE_STICK_TOP = ForgeHooksClient.getBlockMaterial(INCENSE_STICE_TEXTURE_TOP);
 
 	@Override
 	public void onResourceManagerReload(ResourceManager resourceManager) {
@@ -44,7 +47,7 @@ public class IncenseStickModelLoader implements IModelLoader<IncenseStickModelLo
 
 		@Override
 		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-			return List.of(MATERIAL_INCENSE_STICK);
+			return List.of(MATERIAL_INCENSE_STICK_SIDE, MATERIAL_INCENSE_STICK_TOP);
 		}
 	}
 	

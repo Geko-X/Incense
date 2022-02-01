@@ -5,8 +5,6 @@ import com.gekox.incense.ModEntry;
 import com.gekox.incense.client.IncenseStickModelLoader;
 import com.gekox.incense.client.IncenseStickRender;
 import com.gekox.incense.client.PasteRender;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
@@ -57,7 +55,7 @@ public class ClientSetup {
 			return;
 		}
 		
-		event.addSprite(IncenseStickRender.STICK_TEXTURE);
+		event.addSprite(IncenseStickRender.TEXTURE_SIDE);
 	}
 
 	@SubscribeEvent

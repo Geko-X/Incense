@@ -62,13 +62,14 @@ public class IncenseStickBlock extends Block implements EntityBlock {
 
 		if(pState.getValue(Registration.BLOCKSTATE_BURN_HEIGHT) > 0) {
 			int h = pState.getValue(Registration.BLOCKSTATE_BURN_HEIGHT);
-			return Block.box(6.0D, 0.0D, 6.0D, 10.0D, h * 2, 10.0D);
+			return Block.box(6.0D, 0.0D, 6.0D, 10.0D, (h + 1) * 2, 10.0D);
 		}
 		
 		return super.getShape(pState, pLevel, pPos, pContext);
 		
 	}
 
+	// Modified from vanilla torch
 	public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, Random pRand) {
 		
 		if(!pState.getValue(BlockStateProperties.LIT))

@@ -43,22 +43,35 @@ public class ClientTools {
 			default -> builder.put(j);
 		}
 	}
-
-	public static BakedQuad createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Transformation rotation, TextureAtlasSprite sprite) {
+	
+	private static Vector3f getNormal(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4) {
 		Vector3f normal = v3.copy();
 		normal.sub(v2);
 		Vector3f temp = v1.copy();
 		temp.sub(v2);
 		normal.cross(temp);
 		normal.normalize();
-
-		return createQuad(v1, v2, v3, v4, normal, rotation, sprite);
 		
+		return normal;
 	}
 
+	public static BakedQuad createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Transformation rotation, TextureAtlasSprite sprite) {
+		return createQuad(v1, v2, v3, v4, getNormal(v1, v2, v3, v4), rotation, sprite, 0, 0, sprite.getWidth(), sprite.getHeight());
+	}
+
+	public static BakedQuad createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Transformation rotation, TextureAtlasSprite sprite, int tw, int th) {
+		return createQuad(v1, v2, v3, v4, getNormal(v1, v2, v3, v4), rotation, sprite, 0, 0, tw, th);
+	}
+
+	public static BakedQuad createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Transformation rotation, TextureAtlasSprite sprite, int tu0, int tv0, int tu1, int tv1) {
+		return createQuad(v1, v2, v3, v4, getNormal(v1, v2, v3, v4), rotation, sprite, tu0, tv0, tu1, tv1);
+	}
+	
 	public static BakedQuad createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Vector3f normal, Transformation rotation, TextureAtlasSprite sprite) {
-		int tw = sprite.getWidth();
-		int th = sprite.getHeight();
+		return createQuad(v1, v2, v3, v4, normal, rotation, sprite, 0, 0, sprite.getWidth(), sprite.getHeight());
+	}
+
+	public static BakedQuad createQuad(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Vector3f normal, Transformation rotation, TextureAtlasSprite sprite, int tu0, int tv0, int tu1, int tv1) {
 
 		rotation = rotation.blockCenterToCorner();
 		rotation.transformNormal(normal);
@@ -70,10 +83,10 @@ public class ClientTools {
 
 		var builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(Direction.getNearest(normal.x(), normal.y(), normal.z()));
-		putVertex(builder, normal, vv1, 0, 0, sprite);
-		putVertex(builder, normal, vv2, 0, th, sprite);
-		putVertex(builder, normal, vv3, tw, th, sprite);
-		putVertex(builder, normal, vv4, tw, 0, sprite);
+		putVertex(builder, normal, vv1, tu0, tv0, sprite);
+		putVertex(builder, normal, vv2, tu0, tv1, sprite);
+		putVertex(builder, normal, vv3, tu1, tv1, sprite);
+		putVertex(builder, normal, vv4, tu1, tv0, sprite);
 		return builder.build();
 	}
 

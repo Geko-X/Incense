@@ -20,7 +20,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class IncenseStickRender implements BlockEntityRenderer<IncenseStickBE> {
 
-	public static final ResourceLocation STICK_TEXTURE = new ResourceLocation(Constants.MODID, "block/incense_stick");
+	public static final ResourceLocation TEXTURE_SIDE = new ResourceLocation(Constants.MODID, "block/incense_stick_side");
+	public static final ResourceLocation TEXTURE_TOP = new ResourceLocation(Constants.MODID, "block/incense_stick_top");
 	
 	public IncenseStickRender(BlockEntityRendererProvider.Context context) {
 		
@@ -43,7 +44,7 @@ public class IncenseStickRender implements BlockEntityRenderer<IncenseStickBE> {
 	
 	private void renderStick(IncenseStickBE stickBE, PoseStack poseStack, MultiBufferSource bufferSource) {
 		
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(STICK_TEXTURE);
+		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(TEXTURE_SIDE);
 		VertexConsumer buffer = bufferSource.getBuffer(RenderType.translucent());
 		Matrix4f matrix4f = poseStack.last().pose();
 		

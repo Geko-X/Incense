@@ -2,7 +2,6 @@ package com.gekox.incense.client;
 
 import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
-import com.gekox.incense.common.block.IncenseStickBE;
 import com.gekox.incense.setup.Registration;
 import com.gekox.incense.util.IncenseType;
 import com.mojang.math.Transformation;
@@ -30,6 +29,8 @@ import static com.gekox.incense.util.ClientTools.*;
 
 public class IncenseStickBakedModel implements IDynamicBakedModel {
 
+	private static final float ONE_EIGTH = 1 / 8f;
+	
 	private final ModelState modelState;
 	private final Function<Material, TextureAtlasSprite> spriteGetter;
 	private final Map<IncenseStickModelKey, List<BakedQuad>> quadCache = new HashMap<>();
@@ -82,36 +83,50 @@ public class IncenseStickBakedModel implements IDynamicBakedModel {
 		
 	}
 	
-	private static final float ONE_EIGTH = 1 / 8f;
+	
 	
 	private List<BakedQuad> getQuadsNotCached(int burnHeight) {
 
 		var quads = new ArrayList<BakedQuad>();
 
 		Transformation rotation = modelState.getRotation();
-		TextureAtlasSprite texture = spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK);
+		TextureAtlasSprite texture_side = spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK_SIDE);
+		TextureAtlasSprite texture_top = spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK_TOP);
 		
 		// Bounds
 		float w = ONE_EIGTH;
-		float h = ONE_EIGTH * burnHeight + ONE_EIGTH;
+		float h = ONE_EIGTH * (burnHeight);
 		
-		float p0 = 0.5f - (w / 2);
-		float p1 = p0 + w;
+		float p0 = 0.5f - w;
+		float p1 = 0.5f + w;
+		
+		int u0, v0, u1, v1;
+		
+		u0 = 6;
+		v0 = 6;
+		u1 = 10;
+		v1 = 10;
 		
 		// Top
 		//quads.add(ClientTools.createQuad(v(x1, y2, z1), v(x1, y2, z2), v(x2, y2, z2), v(x2, y2, z1), rotation, texture));
-		quads.add(ClientTools.createQuad(v(p1, h, p1), v(p1, h, p0), v(p0, h, p0), v(p0, h, p1), rotation, texture));
+		quads.add(ClientTools.createQuad(v(p1, h, p1), v(p1, h, p0), v(p0, h, p0), v(p0, h, p1), rotation, texture_top, u0, v0, u1, v1));
 
-		// Sides
-		//quads.add(ClientTools.createQuad(v(p1, h, p1), v(p1, 0, p1), v(p0, 0, p0), v(p1, h, p1), rotation, texture));
-		quads.add(ClientTools.createQuad(v(p1, h, p1), v(p1, 0, p1), v(p1, 0, p0), v(p1, h, p0), rotation, texture)); // L
-		quads.add(ClientTools.createQuad(v(p0, h, p1), v(p0, h, p0), v(p0, 0, p0), v(p0, 0, p1), rotation, texture)); // R
+		int b = (Constants.MAX_BURN_HEIGHT - burnHeight + 1) * 2;
 		
-		quads.add(ClientTools.createQuad(v(p0, h, p0), v(p1, h, p0), v(p1, 0, p0), v(p0, 0, p0), rotation, texture)); // F
-		quads.add(ClientTools.createQuad(v(p0, h, p1), v(p0, 0, p1), v(p1, 0, p1), v(p1, h, p1), rotation, texture)); // B
+		u0 = 6;
+		v0 = 0;
+		u1 = 10;
+		v1 = 16 - b;
+		
+		// Sides
+		quads.add(ClientTools.createQuad(v(p0, h, p1), v(p0, 0, p1), v(p1, 0, p1), v(p1, h, p1), rotation, texture_side, u0, v0, u1, v1)); // Z+
+		quads.add(ClientTools.createQuad(v(p1, h, p0), v(p1, 0, p0), v(p0, 0, p0), v(p0, h, p0), rotation, texture_side, u0, v0, u1, v1)); // Z-
+		
+//		quads.add(ClientTools.createQuad(v(p0, h, p0), v(p1, h, p0), v(p1, 0, p0), v(p0, 0, p0), rotation, texture_side, 7, tv1, 10, 0)); // F
+//		quads.add(ClientTools.createQuad(v(p0, h, p1), v(p0, 0, p1), v(p1, 0, p1), v(p1, h, p1), rotation, texture_side, 4, 16)); // B
 
 		// Base
-		quads.add(ClientTools.createQuad(v(p0, 0, p0), v(p1, 0, p1), v(p0, 0, p1), v(p0, 0, p0), DIRECTION_UP, rotation, texture));
+//		quads.add(ClientTools.createQuad(v(p1, 0, p1), v(p0, 0, p1), v(p0, 0, p0), v(p1, 0, p0), rotation, texture_top, 7, 7, 10, 10));
 		
 		return quads;
 	}
@@ -138,7 +153,7 @@ public class IncenseStickBakedModel implements IDynamicBakedModel {
 
 	@Override
 	public TextureAtlasSprite getParticleIcon() {
-		return spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK);
+		return spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK_TOP);
 	}
 
 	@Override
@@ -171,7 +186,7 @@ public class IncenseStickBakedModel implements IDynamicBakedModel {
 
 		Transformation rotation = modelState.getRotation();
 
-		TextureAtlasSprite texture = spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK);
+		TextureAtlasSprite texture = spriteGetter.apply(IncenseStickModelLoader.MATERIAL_INCENSE_STICK_TOP);
 
 		// Bounds
 		float w = 0.1f;
