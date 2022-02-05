@@ -2,19 +2,20 @@ package com.gekox.incense.common.block;
 
 import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
+import com.gekox.incense.config.ConfigValues;
+import com.gekox.incense.network.ModPacketHandler;
+import com.gekox.incense.network.SpawnParticlesMessage;
 import com.gekox.incense.setup.Registration;
 import com.gekox.incense.util.IncenseType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -22,7 +23,7 @@ import net.minecraftforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
+import java.util.Random;
 
 public class IncenseStickBE extends BlockEntity {
 	
@@ -33,20 +34,32 @@ public class IncenseStickBE extends BlockEntity {
 	protected int burnHeight = Constants.MAX_BURN_HEIGHT;
 	protected boolean isBurning = false;
 	
+	private Random random = new Random();
+	
+	
+	private int particleTick, burnTick;
+	
+	
+	private int secondsPerBurn;
+
+	private int ticks;
+	private final int ticksPerSecond = 20;
+	
 	public IncenseStickBE(BlockPos pos, BlockState state) {
 		super(Registration.BE_INCENSE_STICK.get(), pos, state);
 		incenseBlockState = state;
+		
+		secondsPerBurn = ConfigValues.Values.TOTAL_BURN_TIME / Constants.MAX_BURN_HEIGHT;
+		
 	}
 	
 	public void SetIncenseType(IncenseType incenseType) {
 		this._incenseType = incenseType;
 
-		ModEntry.LOGGER.info("[IncenseStickBE]: SetIncenseType to " + this._incenseType);
+		ModEntry.LOGGER.debug("[IncenseStickBE]: SetIncenseType to " + this._incenseType);
 		
 		setChanged();
-//		incenseBlockState = getBlockState().setValue(Registration.BLOCKSTATE_INCENSE_TYPE, this._incenseType);
 		BlockState state = getBlockState().setValue(Registration.BLOCKSTATE_INCENSE_TYPE, this._incenseType);
-//		level.sendBlockUpdated(worldPosition, getBlockState(), incenseBlockState, Block.UPDATE_ALL);
 		level.setBlockAndUpdate(worldPosition, state);
 	}
 	
@@ -59,23 +72,43 @@ public class IncenseStickBE extends BlockEntity {
 	}
 	
 	public void SetBurning(boolean isBurning) {
-		ModEntry.LOGGER.info("[IncenseStickBE]: Set burning to " + isBurning);
+		ModEntry.LOGGER.debug("[IncenseStickBE]: Set burning to " + isBurning);
 
+		ModEntry.LOGGER.info(String.format("[IncenseStickBE]: Burning for %ds with %ds per burn", ConfigValues.Values.TOTAL_BURN_TIME, secondsPerBurn));
+		
 		setChanged();
 		BlockState state = getBlockState().setValue(BlockStateProperties.LIT, isBurning);
 		level.setBlockAndUpdate(worldPosition, state);
+		
 	}
 	
-	private int ticks = 0;
+	
 	public void tickServer() {
-		ticks++;
-		ticks %= 20;
 		
 		BlockState state = getBlockState();
 		
 		if(state.getValue(BlockStateProperties.LIT)) {
-			if(ticks == 0)
-				decrementBurn();
+
+			ticks++;
+			ticks %= ticksPerSecond;
+			if(ticks == 0) {
+
+				// Once a second
+				
+				burnTick++;
+				burnTick %= secondsPerBurn;
+
+				if(burnTick == 0) {
+					decrementBurn();
+				}
+				
+				if(ConfigValues.Values.BASE_SPAWN_CHANCE >= random.nextInt(100)) {
+					handleSpawn();
+				}
+				
+				spawnParticles();
+				
+			}
 		}
 	}
 	
@@ -83,13 +116,39 @@ public class IncenseStickBE extends BlockEntity {
 		burnHeight--;
 		if(burnHeight == 0) {
 			level.destroyBlock(worldPosition, false);
-//			burnHeight = Constants.MAX_BURN_HEIGHT;
 			return;
 		}
 
 		BlockState state = getBlockState().setValue(Registration.BLOCKSTATE_BURN_HEIGHT, burnHeight);
 		level.setBlockAndUpdate(worldPosition, state);
+	}
+	
+	private void handleSpawn() {
 		
+		int radius = ConfigValues.Values.SPAWN_RADIUS;
+		
+		int startX = worldPosition.getX() - radius + 1;
+		int startZ = worldPosition.getZ() - radius + 1;
+
+		int endX = worldPosition.getX() + radius;
+		int endZ = worldPosition.getZ() + radius;
+		
+		int x = random.nextInt((endX - startX) + 1) + startX;
+		int z = random.nextInt((endZ - startZ) + 1) + startZ;
+		int y = worldPosition.getY();
+		
+		BlockPos targetPos = new BlockPos(x, y, z);
+		BlockState state = level.getBlockState(targetPos);
+		
+		if(state.isAir()) {
+			level.setBlockAndUpdate(targetPos, Blocks.COBBLESTONE.defaultBlockState());
+		}
+	}
+	
+	private void spawnParticles() {
+		SpawnParticlesMessage msg = new SpawnParticlesMessage(_incenseType, worldPosition);
+		LevelChunk chunk = level.getChunkAt(worldPosition);
+		ModPacketHandler.SendToNear(chunk, msg);
 	}
 	
 
