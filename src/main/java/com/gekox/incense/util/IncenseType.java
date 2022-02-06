@@ -43,7 +43,7 @@ public enum IncenseType implements StringRepresentable {
 				return type;
 			}
 		}
-		throw new IllegalArgumentException("");
+		throw new IllegalArgumentException("Given value (" + text + ") is not a valid IncenseType");
 	}
 	
 	public static IncenseType fromInt(int i) {

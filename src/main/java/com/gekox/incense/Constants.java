@@ -18,6 +18,7 @@ public class Constants {
 	
 	public static class NBT {
 		public static final String INCENSE_TYPE = "incense.type";
+		public static final String INCENSE_BURN_TICK = "incense.burn";
 		public static final String COLOR_R = "incense.color.r";
 		public static final String COLOR_G = "incense.color.g";
 		public static final String COLOR_B = "incense.color.b";

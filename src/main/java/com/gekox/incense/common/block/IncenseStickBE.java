@@ -2,6 +2,7 @@ package com.gekox.incense.common.block;
 
 import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
+import com.gekox.incense.api.IncenseAPI;
 import com.gekox.incense.config.ConfigValues;
 import com.gekox.incense.network.ModPacketHandler;
 import com.gekox.incense.network.SpawnParticlesMessage;
@@ -11,6 +12,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,12 +42,12 @@ public class IncenseStickBE extends BlockEntity {
 	
 	
 	private int particleTick, burnTick;
-	
-	
 	private int secondsPerBurn;
 
 	private int ticks;
 	private final int ticksPerSecond = 20;
+	
+	private int spawnsThisBurnTick = 0;
 	
 	public IncenseStickBE(BlockPos pos, BlockState state) {
 		super(Registration.BE_INCENSE_STICK.get(), pos, state);
@@ -113,7 +117,15 @@ public class IncenseStickBE extends BlockEntity {
 	}
 	
 	private void decrementBurn() {
+		
+		// Force a spawn if there have been none this burn stage
+		if(spawnsThisBurnTick == 0) {
+			handleSpawn();
+		}
+		
+		spawnsThisBurnTick = 0;
 		burnHeight--;
+		
 		if(burnHeight == 0) {
 			level.destroyBlock(worldPosition, false);
 			return;
@@ -124,6 +136,11 @@ public class IncenseStickBE extends BlockEntity {
 	}
 	
 	private void handleSpawn() {
+
+		spawnsThisBurnTick++;
+		
+		if(_incenseType == IncenseType.NONE || _incenseType == IncenseType.SOOTY)
+			return;
 		
 		int radius = ConfigValues.Values.SPAWN_RADIUS;
 		
@@ -141,7 +158,18 @@ public class IncenseStickBE extends BlockEntity {
 		BlockState state = level.getBlockState(targetPos);
 		
 		if(state.isAir()) {
-			level.setBlockAndUpdate(targetPos, Blocks.COBBLESTONE.defaultBlockState());
+			
+			String mobId = IncenseAPI.GetRandomSpawnForIncense(_incenseType);
+			ModEntry.LOGGER.info("Attempt spawn: {}", mobId);
+			
+			if(mobId == null || mobId.isBlank())
+				return;
+			
+			EntityType entity = EntityType.byString(mobId).get();
+			Mob mob = (Mob) entity.create(level);
+			mob.setPos(targetPos.getX(), targetPos.getY(), targetPos.getZ());
+			mob.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(targetPos), MobSpawnType.SPAWNER, null, null);
+			level.addFreshEntity(mob);
 		}
 	}
 	
@@ -213,12 +241,17 @@ public class IncenseStickBE extends BlockEntity {
 		if(tag.contains(Constants.NBT.INCENSE_TYPE)) {
 			_incenseType = IncenseType.fromString(tag.getString(Constants.NBT.INCENSE_TYPE));
 		}
+
+		if(tag.contains(Constants.NBT.INCENSE_BURN_TICK)) {
+			burnTick = tag.getInt(Constants.NBT.INCENSE_BURN_TICK);
+		}
 	}
 	
 	@Override
 	public void saveAdditional(CompoundTag tag) {
 		saveClientData(tag);
 		tag.putString(Constants.NBT.INCENSE_TYPE, _incenseType.name());
+		tag.putInt(Constants.NBT.INCENSE_BURN_TICK, burnTick);
 	}
 
 	private void saveClientData(CompoundTag tag) {

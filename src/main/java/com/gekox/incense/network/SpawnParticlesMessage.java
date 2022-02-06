@@ -30,7 +30,7 @@ public class SpawnParticlesMessage {
 	}
 	
 	private void doParticles(Supplier<NetworkEvent.Context> ctx) {
-		ModEntry.LOGGER.info("SpawnParticlesMessage doParticles " + this);
+	//	ModEntry.LOGGER.info("SpawnParticlesMessage doParticles " + this);
 	}
 	
 	public static void toBytes(SpawnParticlesMessage msg, FriendlyByteBuf buff) {

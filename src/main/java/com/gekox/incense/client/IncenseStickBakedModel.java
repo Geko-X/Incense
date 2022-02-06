@@ -124,13 +124,13 @@ public class IncenseStickBakedModel implements IDynamicBakedModel {
 			}
 		}
 
-		ModEntry.LOGGER.info("Put " + quadCache.size() + " quad caches");
+		ModEntry.LOGGER.debug("Put " + quadCache.size() + " quad caches");
 		
 	}
 	
 	private List<BakedQuad> generateQuads(IncenseType incenseType, int burnHeight) {
 
-		ModEntry.LOGGER.info("Generating quads for: " + incenseType + " at height " + burnHeight);
+		ModEntry.LOGGER.debug("Generating quads for: " + incenseType + " at height " + burnHeight);
 
 		var quads = new ArrayList<BakedQuad>();
 
