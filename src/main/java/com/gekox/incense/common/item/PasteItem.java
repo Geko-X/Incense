@@ -6,7 +6,6 @@ import com.gekox.incense.util.Color;
 import com.gekox.incense.util.IncenseType;
 import com.google.common.collect.Maps;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
-import javax.sound.sampled.Line;
 import java.util.List;
 import java.util.Map;
 

@@ -1,8 +1,6 @@
 package com.gekox.incense.api;
 
-import com.gekox.incense.ModEntry;
 import com.gekox.incense.util.IncenseType;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;

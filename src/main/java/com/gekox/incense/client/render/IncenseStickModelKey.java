@@ -1,4 +1,4 @@
-package com.gekox.incense.client;
+package com.gekox.incense.client.render;
 
 import com.gekox.incense.util.IncenseType;
 import net.minecraft.client.resources.model.ModelState;

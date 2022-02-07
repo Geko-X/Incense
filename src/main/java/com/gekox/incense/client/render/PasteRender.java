@@ -1,4 +1,4 @@
-package com.gekox.incense.client;
+package com.gekox.incense.client.render;
 
 import com.gekox.incense.common.item.PasteItem;
 import com.gekox.incense.util.Color;

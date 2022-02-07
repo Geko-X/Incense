@@ -4,7 +4,6 @@ import com.gekox.incense.Constants;
 import com.gekox.incense.common.item.PasteItem;
 import com.gekox.incense.setup.Registration;
 import com.gekox.incense.util.IncenseType;
-import com.google.errorprone.annotations.Var;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -135,11 +134,22 @@ public class IncenseStickBlock extends Block implements EntityBlock {
 				return InteractionResult.SUCCESS;
 			}
 			
-			if(stack.getItem() instanceof FlintAndSteelItem) {
-				stickBE.SetBurning(true);
-				return InteractionResult.SUCCESS;
-			}
 			
+			
+			if(stack.getItem() instanceof FlintAndSteelItem) {
+
+				IncenseType incenseType = IncenseType.NONE;
+				if(state.hasProperty(Registration.BLOCKSTATE_INCENSE_TYPE)) {
+					incenseType = state.getValue(Registration.BLOCKSTATE_INCENSE_TYPE);
+				}
+				
+				if(incenseType != IncenseType.NONE) {
+					stickBE.SetBurning(true);
+					return InteractionResult.SUCCESS;
+				}
+				
+				return InteractionResult.FAIL;
+			}
 		}
 		
 		return InteractionResult.PASS;

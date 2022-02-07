@@ -2,9 +2,9 @@ package com.gekox.incense.setup;
 
 import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
-import com.gekox.incense.client.IncenseStickModelLoader;
-import com.gekox.incense.client.IncenseStickRender;
-import com.gekox.incense.client.PasteRender;
+import com.gekox.incense.client.render.IncenseStickModelLoader;
+import com.gekox.incense.client.render.IncenseStickRender;
+import com.gekox.incense.client.render.PasteRender;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;

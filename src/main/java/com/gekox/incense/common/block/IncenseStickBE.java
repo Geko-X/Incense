@@ -4,22 +4,23 @@ import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
 import com.gekox.incense.api.IncenseAPI;
 import com.gekox.incense.config.ConfigValues;
-import com.gekox.incense.network.ModPacketHandler;
-import com.gekox.incense.network.SpawnParticlesMessage;
 import com.gekox.incense.setup.Registration;
+import com.gekox.incense.util.Color;
 import com.gekox.incense.util.IncenseType;
+import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -88,11 +89,14 @@ public class IncenseStickBE extends BlockEntity {
 	
 	
 	public void tickServer() {
+
+		if(level.isClientSide())
+			return;
 		
 		BlockState state = getBlockState();
 		
 		if(state.getValue(BlockStateProperties.LIT)) {
-
+			
 			ticks++;
 			ticks %= ticksPerSecond;
 			if(ticks == 0) {
@@ -117,6 +121,9 @@ public class IncenseStickBE extends BlockEntity {
 	}
 	
 	private void decrementBurn() {
+
+		if(level.isClientSide())
+			return;
 		
 		// Force a spawn if there have been none this burn stage
 		if(spawnsThisBurnTick == 0) {
@@ -137,6 +144,9 @@ public class IncenseStickBE extends BlockEntity {
 	
 	private void handleSpawn() {
 
+		if(level.isClientSide())
+			return;
+		
 		spawnsThisBurnTick++;
 		
 		if(_incenseType == IncenseType.NONE || _incenseType == IncenseType.SOOTY)
@@ -174,9 +184,32 @@ public class IncenseStickBE extends BlockEntity {
 	}
 	
 	private void spawnParticles() {
-		SpawnParticlesMessage msg = new SpawnParticlesMessage(_incenseType, worldPosition);
-		LevelChunk chunk = level.getChunkAt(worldPosition);
-		ModPacketHandler.SendToNear(chunk, msg);
+//		SpawnParticlesMessage msg = new SpawnParticlesMessage(_incenseType, worldPosition);
+//		LevelChunk chunk = level.getChunkAt(worldPosition);
+//		ModPacketHandler.SendToNear(chunk, msg);
+		
+		/*
+		
+		he parameters are actually serverLevel.sendParticles(particle, x, y, z, count, xDist, yDist, zDist, particleSpeed);
+if you want to have specific color you need to make the particle argument custom and set it there.  eg. this is how a spawn black dust new DustParticleOptions(new Vector3f(Vec3.fromRGB24(0)), 4)
+		
+		 */
+		
+		if(level.isClientSide())
+			return;
+
+		int radius = ConfigValues.Values.SPAWN_RADIUS;
+		ServerLevel sLevel = (ServerLevel) level;
+
+		Color color = Color.getColorFromType(_incenseType);
+		float scale = 1;
+		var particle = new DustParticleOptions(new Vector3f(color.r / 255f, color.g / 255f, color.b / 255f), scale);
+		sLevel.sendParticles(particle, 
+				worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
+				50,
+				radius - 1, 1, radius - 1, 
+				0);
+		
 	}
 	
 

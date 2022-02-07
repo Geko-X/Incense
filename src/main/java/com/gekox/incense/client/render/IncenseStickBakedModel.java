@@ -1,8 +1,9 @@
-package com.gekox.incense.client;
+package com.gekox.incense.client.render;
 
 import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
 import com.gekox.incense.setup.Registration;
+import com.gekox.incense.util.ClientTools;
 import com.gekox.incense.util.IncenseType;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.RenderType;
@@ -23,9 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
-import com.gekox.incense.util.ClientTools;
-
-import static com.gekox.incense.util.ClientTools.*;
+import static com.gekox.incense.util.ClientTools.v;
 
 public class IncenseStickBakedModel implements IDynamicBakedModel {
 

@@ -1,4 +1,4 @@
-package com.gekox.incense.client;
+package com.gekox.incense.client.render;
 
 import com.gekox.incense.Constants;
 import com.google.gson.JsonDeserializationContext;

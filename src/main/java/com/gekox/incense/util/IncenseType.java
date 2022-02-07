@@ -3,8 +3,6 @@ package com.gekox.incense.util;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 public enum IncenseType implements StringRepresentable {
 	
 	NONE("none"),
