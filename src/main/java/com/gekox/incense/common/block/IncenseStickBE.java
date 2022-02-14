@@ -4,6 +4,8 @@ import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
 import com.gekox.incense.api.IncenseAPI;
 import com.gekox.incense.config.ConfigValues;
+import com.gekox.incense.network.ModPacketHandler;
+import com.gekox.incense.network.UpdateIncenseStickMessage;
 import com.gekox.incense.setup.Registration;
 import com.gekox.incense.util.Color;
 import com.gekox.incense.util.IncenseType;
@@ -18,10 +20,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -41,7 +42,7 @@ public class IncenseStickBE extends BlockEntity {
 	
 	private Random random = new Random();
 	
-	
+	private int totalBurnTime;
 	private int burnTick;
 	private int secondsPerBurn;
 
@@ -53,17 +54,19 @@ public class IncenseStickBE extends BlockEntity {
 	public IncenseStickBE(BlockPos pos, BlockState state) {
 		super(Registration.BE_INCENSE_STICK.get(), pos, state);
 		incenseBlockState = state;
-		secondsPerBurn = ConfigValues.Values.TOTAL_BURN_TIME / Constants.MAX_BURN_HEIGHT;
+		
+		totalBurnTime = ConfigValues.Values.TOTAL_BURN_TIME;
+		secondsPerBurn = totalBurnTime / Constants.MAX_BURN_HEIGHT;
 	}
 	
 	public void SetIncenseType(IncenseType incenseType) {
 		this.incenseType = incenseType;
 
-		ModEntry.LOGGER.debug("[IncenseStickBE]: SetIncenseType to " + this.incenseType);
+		ModEntry.LOGGER.info("[IncenseStickBE]: SetIncenseType to " + this.incenseType);
 		
 		setChanged();
-		BlockState state = getBlockState();
-		level.setBlockAndUpdate(worldPosition, state);
+		level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+		
 	}
 	
 	public IncenseType GetIncenseType() {
@@ -71,7 +74,7 @@ public class IncenseStickBE extends BlockEntity {
 	}
 	
 	public float getBurnPercent() {
-		return 1f - ((float) burnTick / ConfigValues.Values.TOTAL_BURN_TIME);
+		return 1f - ((float) burnTick / totalBurnTime);
 	}
 	
 	
@@ -79,42 +82,50 @@ public class IncenseStickBE extends BlockEntity {
 		ModEntry.LOGGER.debug("[IncenseStickBE]: Set burning to " + isBurning);
 
 		ModEntry.LOGGER.info(String.format("[IncenseStickBE]: Burning for %ds with %ds per burn", ConfigValues.Values.TOTAL_BURN_TIME, secondsPerBurn));
-		
+
 		setChanged();
-		BlockState state = getBlockState().setValue(BlockStateProperties.LIT, isBurning);
-		level.setBlockAndUpdate(worldPosition, state);
+		level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
 		
 	}
 	
+	public void onUpdateFromServer(int totalBurnTime, int currentBurnTime, IncenseType incenseType) {
+		this.totalBurnTime = totalBurnTime;
+		this.burnTick = currentBurnTime;
+		this.incenseType = incenseType;
+		
+		// Only will be updated if is burning
+		this.isBurning = true;
+	}
 	
 	public void tickServer() {
 
 		if(level.isClientSide())
 			return;
 		
-		BlockState state = getBlockState();
-		
-		if(state.getValue(BlockStateProperties.LIT)) {
-			
+		if(isBurning) {
+
 			ticks++;
 			ticks %= ticksPerSecond;
 			if(ticks == 0) {
 
 				// Once a second
-				
+
 				burnTick++;
 			//	burnTick %= secondsPerBurn;
+
+				UpdateIncenseStickMessage msg = new UpdateIncenseStickMessage(worldPosition, totalBurnTime, burnTick, incenseType);
+				ModPacketHandler.SendToNear(level.getChunkAt(worldPosition), msg);
 
 				if(burnTick % secondsPerBurn == 0) {
 					decrementBurn();
 				}
-				
+
 				if(ConfigValues.Values.BASE_SPAWN_CHANCE >= random.nextInt(100)) {
 					handleSpawn();
 				}
-				
+
 				spawnParticles();
-				
+
 			}
 		}
 	}
@@ -189,7 +200,7 @@ public class IncenseStickBE extends BlockEntity {
 		
 		/*
 		
-		he parameters are actually serverLevel.sendParticles(particle, x, y, z, count, xDist, yDist, zDist, particleSpeed);
+		the parameters are actually serverLevel.sendParticles(particle, x, y, z, count, xDist, yDist, zDist, particleSpeed);
 if you want to have specific color you need to make the particle argument custom and set it there.  eg. this is how a spawn black dust new DustParticleOptions(new Vector3f(Vec3.fromRGB24(0)), 4)
 		
 		 */
@@ -215,15 +226,14 @@ if you want to have specific color you need to make the particle argument custom
 	@Override
 	public CompoundTag getUpdateTag() {
 		CompoundTag tag = super.getUpdateTag();
-		saveClientData(tag);
+		saveToNBT(tag);
 		return tag;
 	}
 
 	@Override
 	public void handleUpdateTag(CompoundTag tag) {
-		if (tag != null) {
-			loadClientData(tag);
-		}
+		if(tag != null)
+			loadFromNBT(tag);
 	}
 
 	@Nullable
@@ -235,19 +245,15 @@ if you want to have specific color you need to make the particle argument custom
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		// This is called client side: remember the current state of the values that we're interested in
-		BlockState oldState = incenseBlockState;
+		IncenseType oldIncenseType = incenseType;
+		int oldBurnTick = burnTick;
+		boolean oldBurning = isBurning;
 
 		CompoundTag tag = pkt.getTag();
-		// This will call loadClientData()
 		handleUpdateTag(tag);
-
-		// If any of the values was changed we request a refresh of our model data and send a block update (this will cause
-		// the baked model to be recreated)
-		if (incenseBlockState != oldState) {
-			ModelDataManager.requestModelDataRefresh(this);
-			BlockState state = getBlockState().setValue(Registration.BLOCKSTATE_INCENSE_TYPE, this.incenseType);
-//			level.sendBlockUpdated(worldPosition, getBlockState(), incenseBlockState, Block.UPDATE_ALL);
-			level.setBlockAndUpdate(worldPosition, state);
+		
+		if(oldIncenseType != incenseType || oldBurnTick != burnTick || oldBurning != isBurning) {
+			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
 		}
 	}
 
@@ -263,51 +269,62 @@ if you want to have specific color you need to make the particle argument custom
 				.withInitial(INCENSE_STICK_BLOCK, incenseBlockState)
 				.build();
 	}
+
+	@Override
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
+		saveToNBT(tag);
+	}
+
+	private void saveToNBT(CompoundTag tag) {
+		CompoundTag incenseTag = new CompoundTag();
+
+		incenseTag.putString(Constants.NBT.INCENSE_TYPE, incenseType.name());
+		incenseTag.putInt(Constants.NBT.INCENSE_BURN_TICK, burnTick);
+		incenseTag.putBoolean(Constants.NBT.IS_BURNING, isBurning);
+
+		tag.put(Constants.NBT.TAG_BASE, incenseTag);
+
+		ModEntry.LOGGER.info("saveToNBT: " + tag);
+
+	}
 	
 	@Override
 	public void load(CompoundTag tag) {
 		
 		super.load(tag);
-		loadClientData(tag);
+		loadFromNBT(tag);
 		
+	}
+
+	private void loadFromNBT(CompoundTag tag) {
 		CompoundTag incenseTag = tag.getCompound(Constants.NBT.TAG_BASE);
-		
+
 		if(incenseTag.contains(Constants.NBT.INCENSE_TYPE)) {
-			incenseType = IncenseType.fromString(tag.getString(Constants.NBT.INCENSE_TYPE));
+			incenseType = IncenseType.fromString(incenseTag.getString(Constants.NBT.INCENSE_TYPE));
+		}
+		
+		else {
+			ModEntry.LOGGER.warn("[IncenseStickBE]: NBT did not have key {}", Constants.NBT.INCENSE_TYPE);
 		}
 
 		if(incenseTag.contains(Constants.NBT.INCENSE_BURN_TICK)) {
-			burnTick = tag.getInt(Constants.NBT.INCENSE_BURN_TICK);
+			burnTick = incenseTag.getInt(Constants.NBT.INCENSE_BURN_TICK);
 		}
-	}
-	
-	
-	@Override
-	public void saveAdditional(CompoundTag tag) {
-		saveClientData(tag);
 
-		CompoundTag incenseTag = new CompoundTag();
+		else {
+			ModEntry.LOGGER.warn("[IncenseStickBE]: NBT did not have key {}", Constants.NBT.INCENSE_BURN_TICK);
+		}
 
-		incenseTag.putString(Constants.NBT.INCENSE_TYPE, incenseType.name());
-		incenseTag.putInt(Constants.NBT.INCENSE_BURN_TICK, burnTick);
-		
-		tag.put(Constants.NBT.TAG_BASE, incenseTag);
-	}
+		if(incenseTag.contains(Constants.NBT.IS_BURNING)) {
+			isBurning = incenseTag.getBoolean(Constants.NBT.IS_BURNING);
+		}
 
-	private void saveClientData(CompoundTag tag) {
-		CompoundTag infoTag = new CompoundTag();
-	}
+		else {
+			ModEntry.LOGGER.warn("[IncenseStickBE]: NBT did not have key {}", Constants.NBT.IS_BURNING);
+		}
 
-	private void loadClientData(CompoundTag tag) {
-//		CompoundTag incenseTag = tag.getCompound(Constants.NBT.TAG_BASE);
-//
-//		if(incenseTag.contains(Constants.NBT.INCENSE_TYPE)) {
-//			incenseType = IncenseType.fromString(tag.getString(Constants.NBT.INCENSE_TYPE));
-//		}
-//
-//		if(incenseTag.contains(Constants.NBT.INCENSE_BURN_TICK)) {
-//			burnTick = tag.getInt(Constants.NBT.INCENSE_BURN_TICK);
-//		}
+		ModEntry.LOGGER.info("loadFromNBT: " + tag);
+		ModEntry.LOGGER.info("loadFromNBT: " + incenseTag);
 	}
-	
 }

@@ -1,7 +1,7 @@
 package com.gekox.incense.datagen;
 
 import com.gekox.incense.Constants;
-import com.gekox.incense.client.render.IncenseStickModelLoader;
+//import com.gekox.incense.client.render.IncenseStickModelLoader;
 import com.gekox.incense.setup.Registration;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
@@ -29,7 +29,7 @@ public class ModBlockStates extends BlockStateProvider {
 //		simpleBlock(Registration.BLOCK_INCENSE_STICK.get(), incenseStickModel);
 
 		BlockModelBuilder incenseStickModel = models().getBuilder(Registration.BLOCK_INCENSE_STICK.get().getRegistryName().getPath())
-				.parent(models().getExistingFile(mcLoc("air")));
+				.parent(models().getExistingFile(mcLoc("block/entity")));
 		simpleBlock(Registration.BLOCK_INCENSE_STICK.get(), incenseStickModel);
 	}
 }

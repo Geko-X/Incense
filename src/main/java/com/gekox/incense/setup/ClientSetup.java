@@ -2,7 +2,7 @@ package com.gekox.incense.setup;
 
 import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
-import com.gekox.incense.client.render.IncenseStickModelLoader;
+//import com.gekox.incense.client.render.IncenseStickModelLoader;
 import com.gekox.incense.client.render.IncenseStickRender;
 import com.gekox.incense.client.render.PasteRender;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;

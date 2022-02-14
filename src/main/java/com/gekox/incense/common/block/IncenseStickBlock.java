@@ -68,21 +68,24 @@ public class IncenseStickBlock extends Block implements EntityBlock {
 		return Block.box(6.0D, 0.0D, 6.0D, 10.0D, 14, 10.0D);
 		
 	}
+	
+	
 
 	// Modified from vanilla torch
 	public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, Random pRand) {
 		
-		if(!pState.getValue(BlockStateProperties.LIT))
-			return;
-
 		BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
 		if(blockEntity instanceof IncenseStickBE incenseStickBE) {
-			double h = incenseStickBE.getBurnPercent() * 14;
 			
+			if(!incenseStickBE.isBurning)
+				return;
+			
+			double h = incenseStickBE.getBurnPercent() * 14;
+
 			double x = (double) pPos.getX() + 0.5D;
 			double y = (double) pPos.getY() + h * (1d/16) + (1d/16);
 			double z = (double) pPos.getZ() + 0.5D;
-			
+
 			pLevel.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
 			pLevel.addParticle(ParticleTypes.FLAME, x, y, z, 0.0D, 0.0D, 0.0D);
 		}
@@ -155,20 +158,20 @@ public class IncenseStickBlock extends Block implements EntityBlock {
 		
 	}
 
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		super.createBlockStateDefinition(builder);
-		builder.add(BlockStateProperties.LIT); 			// If burning or not
+//	@Override
+//	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+//		super.createBlockStateDefinition(builder);
+//		builder.add(BlockStateProperties.LIT); 			// If burning or not
 //		builder.add(Registration.BLOCKSTATE_INCENSE_TYPE);
 //		builder.add(Registration.BLOCKSTATE_BURN_HEIGHT);
-	}
+//	}
 
-	@Nullable
-	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return super.getStateForPlacement(context)
-				.setValue(BlockStateProperties.LIT, false);
+//	@Nullable
+//	@Override
+//	public BlockState getStateForPlacement(BlockPlaceContext context) {
+//		return super.getStateForPlacement(context);
+//				.setValue(BlockStateProperties.LIT, false);
 //				.setValue(Registration.BLOCKSTATE_INCENSE_TYPE, IncenseType.NONE);
 //				.setValue(Registration.BLOCKSTATE_BURN_HEIGHT, Constants.MAX_BURN_HEIGHT);
-	}
+//	}
 }

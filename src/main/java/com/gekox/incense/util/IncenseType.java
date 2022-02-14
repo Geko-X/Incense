@@ -1,5 +1,6 @@
 package com.gekox.incense.util;
 
+import com.gekox.incense.ModEntry;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +45,7 @@ public enum IncenseType implements StringRepresentable {
 		//throw new IllegalArgumentException("Given value (" + text + ") is not a valid IncenseType");
 		
 		// Silently return NONE if something failed.
+		ModEntry.LOGGER.info("Given value (" + text + ") is not a valid IncenseType");
 		return IncenseType.NONE;
 	}
 	

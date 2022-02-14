@@ -4,6 +4,7 @@ import com.gekox.incense.Constants;
 import com.gekox.incense.ModEntry;
 import com.gekox.incense.common.block.IncenseStickBE;
 import com.gekox.incense.common.block.IncenseStickBlock;
+import com.gekox.incense.common.item.IncenseStickItem;
 import com.gekox.incense.common.item.PasteItem;
 import com.gekox.incense.util.IncenseType;
 import net.minecraft.resources.ResourceLocation;
@@ -41,10 +42,10 @@ public class Registration {
 	}
 
 	// Blockstates
-	public static final EnumProperty<IncenseType> BLOCKSTATE_INCENSE_TYPE = EnumProperty.create("incense_type", IncenseType.class);
-	public static final IntegerProperty BLOCKSTATE_BURN_HEIGHT = IntegerProperty.create("burn_time", 0, Constants.MAX_BURN_HEIGHT);
+//	public static final EnumProperty<IncenseType> BLOCKSTATE_INCENSE_TYPE = EnumProperty.create("incense_type", IncenseType.class);
+//	public static final IntegerProperty BLOCKSTATE_BURN_HEIGHT = IntegerProperty.create("burn_time", 0, Constants.MAX_BURN_HEIGHT);
 	
-	public static final BlockBehaviour.Properties BLOCK_PROPERTIES_MOD_DEFAULT = BlockBehaviour.Properties.of(Material.WOOD).strength(0);
+//	public static final BlockBehaviour.Properties BLOCK_PROPERTIES_MOD_DEFAULT = BlockBehaviour.Properties.of(Material.WOOD).strength(0);
 	public static final Item.Properties ITEM_PROPERTIES_MOD_DEFAULT = new Item.Properties().tab(ModSetup.ITEM_GROUP);
 	
 	public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block, Item.Properties properties) {
@@ -93,7 +94,10 @@ public class Registration {
 //			() -> new Block(
 //					BlockBehaviour.Properties.of(Material.WOOD).strength(0)));
 	public static final RegistryObject<IncenseStickBlock> BLOCK_INCENSE_STICK = MOD_BLOCKS.register(Constants.Names.NAME_INCENSE_STICK, IncenseStickBlock::new);
-	public static final RegistryObject<Item> ITEM_INCENSE_STICK = fromBlock(BLOCK_INCENSE_STICK, ITEM_PROPERTIES_MOD_DEFAULT);
+//	public static final RegistryObject<Item> ITEM_INCENSE_STICK = fromBlock(BLOCK_INCENSE_STICK, ITEM_PROPERTIES_MOD_DEFAULT);
+	public static final RegistryObject<Item> ITEM_INCENSE_STICK = MOD_ITEMS.register(BLOCK_INCENSE_STICK.getId().getPath(),
+		() -> new IncenseStickItem(ITEM_PROPERTIES_MOD_DEFAULT));
+	
 	public static final RegistryObject<BlockEntityType<IncenseStickBE>> BE_INCENSE_STICK = MOD_BLOCK_ENTITIES.register(Constants.Names.NAME_INCENSE_STICK,
 			() -> BlockEntityType.Builder.of(IncenseStickBE::new, BLOCK_INCENSE_STICK.get()).build(null));
 	
