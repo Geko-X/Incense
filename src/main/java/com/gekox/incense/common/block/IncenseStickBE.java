@@ -35,14 +35,14 @@ public class IncenseStickBE extends BlockEntity {
 	public static final ModelProperty<BlockState> INCENSE_STICK_BLOCK = new ModelProperty<>();
 	private BlockState incenseBlockState;
 	
-	protected IncenseType _incenseType = IncenseType.NONE;
+	protected IncenseType incenseType = IncenseType.NONE;
 	protected int burnHeight = Constants.MAX_BURN_HEIGHT;
 	protected boolean isBurning = false;
 	
 	private Random random = new Random();
 	
 	
-	private int particleTick, burnTick;
+	private int burnTick;
 	private int secondsPerBurn;
 
 	private int ticks;
@@ -53,28 +53,27 @@ public class IncenseStickBE extends BlockEntity {
 	public IncenseStickBE(BlockPos pos, BlockState state) {
 		super(Registration.BE_INCENSE_STICK.get(), pos, state);
 		incenseBlockState = state;
-		
 		secondsPerBurn = ConfigValues.Values.TOTAL_BURN_TIME / Constants.MAX_BURN_HEIGHT;
-		
 	}
 	
 	public void SetIncenseType(IncenseType incenseType) {
-		this._incenseType = incenseType;
+		this.incenseType = incenseType;
 
-		ModEntry.LOGGER.debug("[IncenseStickBE]: SetIncenseType to " + this._incenseType);
+		ModEntry.LOGGER.debug("[IncenseStickBE]: SetIncenseType to " + this.incenseType);
 		
 		setChanged();
-		BlockState state = getBlockState().setValue(Registration.BLOCKSTATE_INCENSE_TYPE, this._incenseType);
+		BlockState state = getBlockState();
 		level.setBlockAndUpdate(worldPosition, state);
 	}
 	
 	public IncenseType GetIncenseType() {
-		return _incenseType;
+		return incenseType;
 	}
 	
 	public float getBurnPercent() {
-		return 1;
+		return 1f - ((float) burnTick / ConfigValues.Values.TOTAL_BURN_TIME);
 	}
+	
 	
 	public void SetBurning(boolean isBurning) {
 		ModEntry.LOGGER.debug("[IncenseStickBE]: Set burning to " + isBurning);
@@ -104,9 +103,9 @@ public class IncenseStickBE extends BlockEntity {
 				// Once a second
 				
 				burnTick++;
-				burnTick %= secondsPerBurn;
+			//	burnTick %= secondsPerBurn;
 
-				if(burnTick == 0) {
+				if(burnTick % secondsPerBurn == 0) {
 					decrementBurn();
 				}
 				
@@ -138,8 +137,8 @@ public class IncenseStickBE extends BlockEntity {
 			return;
 		}
 
-		BlockState state = getBlockState().setValue(Registration.BLOCKSTATE_BURN_HEIGHT, burnHeight);
-		level.setBlockAndUpdate(worldPosition, state);
+//		BlockState state = getBlockState().setValue(Registration.BLOCKSTATE_BURN_HEIGHT, burnHeight);
+//		level.setBlockAndUpdate(worldPosition, state);
 	}
 	
 	private void handleSpawn() {
@@ -149,7 +148,7 @@ public class IncenseStickBE extends BlockEntity {
 		
 		spawnsThisBurnTick++;
 		
-		if(_incenseType == IncenseType.NONE || _incenseType == IncenseType.SOOTY)
+		if(incenseType == IncenseType.NONE || incenseType == IncenseType.SOOTY)
 			return;
 		
 		int radius = ConfigValues.Values.SPAWN_RADIUS;
@@ -169,7 +168,7 @@ public class IncenseStickBE extends BlockEntity {
 		
 		if(state.isAir()) {
 			
-			String mobId = IncenseAPI.GetRandomSpawnForIncense(_incenseType);
+			String mobId = IncenseAPI.GetRandomSpawnForIncense(incenseType);
 			ModEntry.LOGGER.info("Attempt spawn: {}", mobId);
 			
 			if(mobId == null || mobId.isBlank())
@@ -201,7 +200,7 @@ if you want to have specific color you need to make the particle argument custom
 		int radius = ConfigValues.Values.SPAWN_RADIUS;
 		ServerLevel sLevel = (ServerLevel) level;
 
-		Color color = Color.getColorFromType(_incenseType);
+		Color color = Color.getColorFromType(incenseType);
 		float scale = 1;
 		var particle = new DustParticleOptions(new Vector3f(color.r / 255f, color.g / 255f, color.b / 255f), scale);
 		sLevel.sendParticles(particle, 
@@ -246,7 +245,7 @@ if you want to have specific color you need to make the particle argument custom
 		// the baked model to be recreated)
 		if (incenseBlockState != oldState) {
 			ModelDataManager.requestModelDataRefresh(this);
-			BlockState state = getBlockState().setValue(Registration.BLOCKSTATE_INCENSE_TYPE, this._incenseType);
+			BlockState state = getBlockState().setValue(Registration.BLOCKSTATE_INCENSE_TYPE, this.incenseType);
 //			level.sendBlockUpdated(worldPosition, getBlockState(), incenseBlockState, Block.UPDATE_ALL);
 			level.setBlockAndUpdate(worldPosition, state);
 		}
@@ -271,20 +270,28 @@ if you want to have specific color you need to make the particle argument custom
 		super.load(tag);
 		loadClientData(tag);
 		
-		if(tag.contains(Constants.NBT.INCENSE_TYPE)) {
-			_incenseType = IncenseType.fromString(tag.getString(Constants.NBT.INCENSE_TYPE));
+		CompoundTag incenseTag = tag.getCompound(Constants.NBT.TAG_BASE);
+		
+		if(incenseTag.contains(Constants.NBT.INCENSE_TYPE)) {
+			incenseType = IncenseType.fromString(tag.getString(Constants.NBT.INCENSE_TYPE));
 		}
 
-		if(tag.contains(Constants.NBT.INCENSE_BURN_TICK)) {
+		if(incenseTag.contains(Constants.NBT.INCENSE_BURN_TICK)) {
 			burnTick = tag.getInt(Constants.NBT.INCENSE_BURN_TICK);
 		}
 	}
 	
+	
 	@Override
 	public void saveAdditional(CompoundTag tag) {
 		saveClientData(tag);
-		tag.putString(Constants.NBT.INCENSE_TYPE, _incenseType.name());
-		tag.putInt(Constants.NBT.INCENSE_BURN_TICK, burnTick);
+
+		CompoundTag incenseTag = new CompoundTag();
+
+		incenseTag.putString(Constants.NBT.INCENSE_TYPE, incenseType.name());
+		incenseTag.putInt(Constants.NBT.INCENSE_BURN_TICK, burnTick);
+		
+		tag.put(Constants.NBT.TAG_BASE, incenseTag);
 	}
 
 	private void saveClientData(CompoundTag tag) {
@@ -292,7 +299,15 @@ if you want to have specific color you need to make the particle argument custom
 	}
 
 	private void loadClientData(CompoundTag tag) {
-		
+//		CompoundTag incenseTag = tag.getCompound(Constants.NBT.TAG_BASE);
+//
+//		if(incenseTag.contains(Constants.NBT.INCENSE_TYPE)) {
+//			incenseType = IncenseType.fromString(tag.getString(Constants.NBT.INCENSE_TYPE));
+//		}
+//
+//		if(incenseTag.contains(Constants.NBT.INCENSE_BURN_TICK)) {
+//			burnTick = tag.getInt(Constants.NBT.INCENSE_BURN_TICK);
+//		}
 	}
 	
 }

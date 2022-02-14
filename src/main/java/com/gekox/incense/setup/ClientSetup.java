@@ -5,10 +5,14 @@ import com.gekox.incense.ModEntry;
 import com.gekox.incense.client.render.IncenseStickModelLoader;
 import com.gekox.incense.client.render.IncenseStickRender;
 import com.gekox.incense.client.render.PasteRender;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -22,10 +26,10 @@ public class ClientSetup {
 
 		ModEntry.LOGGER.info("Client setup");
 		
-//		event.enqueueWork(() -> {
-//			ItemBlockRenderTypes.setRenderLayer(Registration.BLOCK_INCENSE_STICK.get(), RenderType.translucent());
-//			IncenseStickRender.Register();
-//		});
+		event.enqueueWork(() -> {
+			ItemBlockRenderTypes.setRenderLayer(Registration.BLOCK_INCENSE_STICK.get(), IncenseStickRender.RenderType());
+			IncenseStickRender.Register();
+		});
 		
 	}
 	
@@ -54,12 +58,21 @@ public class ClientSetup {
 		if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
 			return;
 		}
-		
+
+		event.addSprite(IncenseStickRender.TEXTURE_TOP);
 		event.addSprite(IncenseStickRender.TEXTURE_SIDE);
+		event.addSprite(IncenseStickRender.TEXTURE);
 	}
 
-	@SubscribeEvent
-	public static void onModelRegistryEvent(ModelRegistryEvent event) {
-		ModelLoaderRegistry.registerLoader(IncenseStickModelLoader.INCENSE_STICK_LOADER, new IncenseStickModelLoader());
-	}
+//	@SubscribeEvent
+//	public static void onModelRegistryEvent(ModelRegistryEvent event) {
+//		ModelLoaderRegistry.registerLoader(IncenseStickModelLoader.INCENSE_STICK_LOADER, new IncenseStickModelLoader());
+//	}
+	
+//	@SubscribeEvent
+//	public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+//		event.registerBlockEntityRenderer(Registration.BE_INCENSE_STICK.get(), IncenseStickRender::new);
+//		ModEntry.LOGGER.info("Registered IncenseStickRender");
+//	}
+
 }

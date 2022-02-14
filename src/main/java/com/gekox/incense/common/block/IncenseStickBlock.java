@@ -58,13 +58,14 @@ public class IncenseStickBlock extends Block implements EntityBlock {
 	}
 
 	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-
-		if(pState.getValue(Registration.BLOCKSTATE_BURN_HEIGHT) > 0) {
-			int h = pState.getValue(Registration.BLOCKSTATE_BURN_HEIGHT);
-			return Block.box(6.0D, 0.0D, 6.0D, 10.0D, (h + 1) * 2, 10.0D);
-		}
 		
-		return super.getShape(pState, pLevel, pPos, pContext);
+		BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+		if(blockEntity instanceof IncenseStickBE incenseStickBE) {
+			double h = incenseStickBE.getBurnPercent() * 14;
+			return Block.box(6.0D, 0.0D, 6.0D, 10.0D, h, 10.0D);
+		}
+
+		return Block.box(6.0D, 0.0D, 6.0D, 10.0D, 14, 10.0D);
 		
 	}
 
@@ -73,18 +74,18 @@ public class IncenseStickBlock extends Block implements EntityBlock {
 		
 		if(!pState.getValue(BlockStateProperties.LIT))
 			return;
-		
-		if(pState.getValue(Registration.BLOCKSTATE_BURN_HEIGHT) > 0) {
-			double h = pState.getValue(Registration.BLOCKSTATE_BURN_HEIGHT);
+
+		BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+		if(blockEntity instanceof IncenseStickBE incenseStickBE) {
+			double h = incenseStickBE.getBurnPercent() * 14;
 			
 			double x = (double) pPos.getX() + 0.5D;
-			double y = (double) pPos.getY() + h * (1d/8) + (1d/8);
+			double y = (double) pPos.getY() + h * (1d/16) + (1d/16);
 			double z = (double) pPos.getZ() + 0.5D;
 			
 			pLevel.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
 			pLevel.addParticle(ParticleTypes.FLAME, x, y, z, 0.0D, 0.0D, 0.0D);
 		}
-		
 	}
 	
 	@Override
@@ -134,14 +135,12 @@ public class IncenseStickBlock extends Block implements EntityBlock {
 				return InteractionResult.SUCCESS;
 			}
 			
-			
-			
 			if(stack.getItem() instanceof FlintAndSteelItem) {
 
-				IncenseType incenseType = IncenseType.NONE;
-				if(state.hasProperty(Registration.BLOCKSTATE_INCENSE_TYPE)) {
-					incenseType = state.getValue(Registration.BLOCKSTATE_INCENSE_TYPE);
-				}
+				IncenseType incenseType = stickBE.GetIncenseType();
+//				if(state.hasProperty(Registration.BLOCKSTATE_INCENSE_TYPE)) {
+//					incenseType = state.getValue(Registration.BLOCKSTATE_INCENSE_TYPE);
+//				}
 				
 				if(incenseType != IncenseType.NONE) {
 					stickBE.SetBurning(true);
@@ -160,16 +159,16 @@ public class IncenseStickBlock extends Block implements EntityBlock {
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
 		builder.add(BlockStateProperties.LIT); 			// If burning or not
-		builder.add(Registration.BLOCKSTATE_INCENSE_TYPE);
-		builder.add(Registration.BLOCKSTATE_BURN_HEIGHT);
+//		builder.add(Registration.BLOCKSTATE_INCENSE_TYPE);
+//		builder.add(Registration.BLOCKSTATE_BURN_HEIGHT);
 	}
 
 	@Nullable
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		return super.getStateForPlacement(context)
-				.setValue(BlockStateProperties.LIT, false)
-				.setValue(Registration.BLOCKSTATE_INCENSE_TYPE, IncenseType.NONE)
-				.setValue(Registration.BLOCKSTATE_BURN_HEIGHT, Constants.MAX_BURN_HEIGHT);
+				.setValue(BlockStateProperties.LIT, false);
+//				.setValue(Registration.BLOCKSTATE_INCENSE_TYPE, IncenseType.NONE);
+//				.setValue(Registration.BLOCKSTATE_BURN_HEIGHT, Constants.MAX_BURN_HEIGHT);
 	}
 }

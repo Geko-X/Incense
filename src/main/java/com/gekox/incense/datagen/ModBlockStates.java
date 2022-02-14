@@ -18,15 +18,18 @@ public class ModBlockStates extends BlockStateProvider {
 	protected void registerStatesAndModels() {
 //		simpleBlock(Registration.BLOCK_INCENSE_STICK.get());
 
+//		BlockModelBuilder incenseStickModel = models().getBuilder(Registration.BLOCK_INCENSE_STICK.get().getRegistryName().getPath())
+//				.parent(models().getExistingFile(mcLoc("cube")))
+//				.customLoader((blockModelBuilder, helper) -> 
+//						new CustomLoaderBuilder<BlockModelBuilder>(IncenseStickModelLoader.INCENSE_STICK_LOADER, blockModelBuilder, helper)
+//				{ }
+//				)
+//				.end();
+//		
+//		simpleBlock(Registration.BLOCK_INCENSE_STICK.get(), incenseStickModel);
+
 		BlockModelBuilder incenseStickModel = models().getBuilder(Registration.BLOCK_INCENSE_STICK.get().getRegistryName().getPath())
-				.parent(models().getExistingFile(mcLoc("cube")))
-				.customLoader((blockModelBuilder, helper) -> 
-						new CustomLoaderBuilder<BlockModelBuilder>(IncenseStickModelLoader.INCENSE_STICK_LOADER, blockModelBuilder, helper)
-				{ }
-				)
-				.end();
-		
+				.parent(models().getExistingFile(mcLoc("air")));
 		simpleBlock(Registration.BLOCK_INCENSE_STICK.get(), incenseStickModel);
-		
 	}
 }
