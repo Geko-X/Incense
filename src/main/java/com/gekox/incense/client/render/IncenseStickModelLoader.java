@@ -1,24 +1,5 @@
 package com.gekox.incense.client.render;
 
-import com.gekox.incense.Constants;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-
 //public class IncenseStickModelLoader implements IModelLoader<IncenseStickModelLoader.IncenseStickModelGeometry> {
 //
 //	public static final ResourceLocation INCENSE_STICK_LOADER = new ResourceLocation(Constants.MODID, "incense_stick_loader");

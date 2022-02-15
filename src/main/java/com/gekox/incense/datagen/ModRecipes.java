@@ -22,12 +22,11 @@ public class ModRecipes extends RecipeProvider {
 
 	@Override
 	protected void buildCraftingRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(BLOCK_INCENSE_STICK.get())
-				.define('P', TAG_INCENSE_PASTE)
+		ShapedRecipeBuilder.shaped(ITEM_INCENSE_STICK.get())
 				.define('S', Tags.Items.RODS_WOODEN)
-				.pattern("P")
 				.pattern("S")
-				.unlockedBy("has_item", has(TAG_INCENSE_PASTE))
+				.pattern("S")
+				.unlockedBy("has_item", has(Tags.Items.RODS_WOODEN))
 				.save(consumer);
 		
 		ShapedRecipeBuilder.shaped(ITEM_MORTAR_PESTLE.get())

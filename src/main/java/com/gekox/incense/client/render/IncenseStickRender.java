@@ -8,9 +8,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -18,11 +22,12 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class IncenseStickRender <T extends IncenseStickBE> implements BlockEntityRenderer<T> {
+public class IncenseStickRender <T extends IncenseStickBE> extends BlockEntityWithoutLevelRenderer implements BlockEntityRenderer<T>  {
 
 	public static final ResourceLocation TEXTURE_SIDE = new ResourceLocation(Constants.MODID, "block/incense_stick_side");
 	public static final ResourceLocation TEXTURE_TOP = new ResourceLocation(Constants.MODID, "block/incense_stick_top");
@@ -33,10 +38,17 @@ public class IncenseStickRender <T extends IncenseStickBE> implements BlockEntit
 	private static final float ONE_EIGTH = 1 / 8f;
 	private static final float ONE_SIXTEENTH = 1 / 16f;
 	
-	public IncenseStickRender(BlockEntityRendererProvider.Context context) {
-		
-	}
+	public static IncenseStickRender INSTANCE;
 	
+	public IncenseStickRender(BlockEntityRendererProvider.Context context) {
+		super(context.getBlockEntityRenderDispatcher(), context.getModelSet());
+		INSTANCE = this;
+	}
+
+	public IncenseStickRender(BlockEntityRenderDispatcher pBlockEntityRenderDispatcher, EntityModelSet pEntityModelSet) {
+		super(pBlockEntityRenderDispatcher, pEntityModelSet);
+	}
+
 	public static void Register() {
 		BlockEntityRenderers.register(Registration.BE_INCENSE_STICK.get(), IncenseStickRender::new);
 		ModEntry.LOGGER.info("Registered IncenseStickRender");
@@ -45,21 +57,20 @@ public class IncenseStickRender <T extends IncenseStickBE> implements BlockEntit
 	public static RenderType RenderType() {
 		return RenderType.solid();
 	}
+
+	public void renderFromItem(ItemStack stack, T blockEntity, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+		renderStick(blockEntity, 0, poseStack, bufferSource, packedLight, packedOverlay);
+	}
 	
 	@Override
 	public void render(T pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
-		
 		pPoseStack.pushPose();
-		
 		renderStick(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay);
-		
 		pPoseStack.popPose();
 	}
 	
 	
-	
 	private void renderStick(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-		
 		
 		VertexConsumer buffer = bufferSource.getBuffer(RenderType());
 		Matrix4f matrix = poseStack.last().pose();

@@ -42,8 +42,9 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(Constants.Lang.TOOLTIP_PASTE_NONE2, "Use it to plan out spawning spaces!");
 		
 		add(Constants.Lang.TOOLTIP_STICK_INSTRUCTIONS, "Place in world and %s %s on it, then %s");
-		
+
 		add(Registration.BLOCK_INCENSE_STICK.get(), "Incense Stick");
+//		add(Registration.ITEM_INCENSE_STICK.get(), "Incense Stick");
 //		add(Registration.BLOCK_TEST_BLOCK.get(), "Test Block");
 
 		add(Registration.ITEM_MORTAR_PESTLE.get(), "Mortar and Pestle");

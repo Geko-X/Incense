@@ -1,30 +1,5 @@
 package com.gekox.incense.client.render;
 
-import com.gekox.incense.Constants;
-import com.gekox.incense.ModEntry;
-import com.gekox.incense.setup.Registration;
-import com.gekox.incense.util.ClientTools;
-import com.gekox.incense.util.IncenseType;
-import com.mojang.math.Transformation;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
-import java.util.function.Function;
-
-import static com.gekox.incense.util.ClientTools.v;
 //
 //public class IncenseStickBakedModel implements IDynamicBakedModel {
 //

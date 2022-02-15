@@ -13,10 +13,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -96,7 +92,7 @@ public class Registration {
 	public static final RegistryObject<IncenseStickBlock> BLOCK_INCENSE_STICK = MOD_BLOCKS.register(Constants.Names.NAME_INCENSE_STICK, IncenseStickBlock::new);
 //	public static final RegistryObject<Item> ITEM_INCENSE_STICK = fromBlock(BLOCK_INCENSE_STICK, ITEM_PROPERTIES_MOD_DEFAULT);
 	public static final RegistryObject<Item> ITEM_INCENSE_STICK = MOD_ITEMS.register(BLOCK_INCENSE_STICK.getId().getPath(),
-		() -> new IncenseStickItem(ITEM_PROPERTIES_MOD_DEFAULT));
+		() -> new IncenseStickItem(BLOCK_INCENSE_STICK.get(), ITEM_PROPERTIES_MOD_DEFAULT));
 	
 	public static final RegistryObject<BlockEntityType<IncenseStickBE>> BE_INCENSE_STICK = MOD_BLOCK_ENTITIES.register(Constants.Names.NAME_INCENSE_STICK,
 			() -> BlockEntityType.Builder.of(IncenseStickBE::new, BLOCK_INCENSE_STICK.get()).build(null));

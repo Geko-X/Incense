@@ -1,6 +1,5 @@
 package com.gekox.incense.network;
 
-import com.gekox.incense.ModEntry;
 import com.gekox.incense.common.block.IncenseStickBE;
 import com.gekox.incense.util.IncenseType;
 import net.minecraft.client.Minecraft;
@@ -11,7 +10,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;

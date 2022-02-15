@@ -16,7 +16,7 @@ public class ModItemModels extends ItemModelProvider {
 
 	@Override
 	protected void registerModels() {
-		registerModelForItem(Registration.ITEM_INCENSE_STICK, Constants.Names.NAME_INCENSE_STICK);
+//		registerModelForItem(Registration.ITEM_INCENSE_STICK, Constants.Names.NAME_INCENSE_STICK);
 //		registerModelForItem(Registration.ITEM_TEST_BLOCK, Constants.NAME_TEST_BLOCK);
 
 		registerItemTexture(Registration.ITEM_MORTAR_PESTLE, Constants.Names.NAME_MORTAR_PESTLE);
